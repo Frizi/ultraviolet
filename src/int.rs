@@ -1,3 +1,4 @@
+use std::alloc::Layout;
 use std::convert::{TryFrom, TryInto};
 use std::ops::*;
 
@@ -200,8 +201,8 @@ macro_rules! vec2i {
             }
 
             #[inline]
-            pub fn layout() -> alloc::alloc::Layout {
-                alloc::alloc::Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
+            pub fn layout() -> Layout {
+                Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
             }
 
             #[inline]
@@ -655,8 +656,8 @@ macro_rules! vec3i {
             }
 
             #[inline]
-            pub fn layout() -> alloc::alloc::Layout {
-                alloc::alloc::Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
+            pub fn layout() -> Layout {
+                Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
             }
 
             #[inline]
@@ -1085,8 +1086,8 @@ macro_rules! vec4i {
 
 
             #[inline]
-            pub fn layout() -> alloc::alloc::Layout {
-                alloc::alloc::Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
+            pub fn layout() -> Layout {
+                Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
             }
 
             #[inline]

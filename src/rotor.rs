@@ -56,6 +56,7 @@ use crate::*;
 
 use wide::f32x4;
 
+use std::alloc::Layout;
 use std::ops::*;
 
 macro_rules! rotor2s {
@@ -212,8 +213,8 @@ macro_rules! rotor2s {
             }
 
             #[inline]
-            pub fn layout() -> alloc::alloc::Layout {
-                alloc::alloc::Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
+            pub fn layout() -> Layout {
+                Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
             }
         }
 
@@ -567,8 +568,8 @@ macro_rules! rotor3s {
             }
 
             #[inline]
-            pub fn layout() -> alloc::alloc::Layout {
-                alloc::alloc::Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
+            pub fn layout() -> Layout {
+                Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
             }
         }
 

@@ -37,6 +37,7 @@ use wide::f32x4;
 use crate::util::*;
 use crate::vec::*;
 
+use std::alloc::Layout;
 use std::ops::*;
 
 macro_rules! bivec2s {
@@ -96,8 +97,8 @@ macro_rules! bivec2s {
             }
 
             #[inline]
-            pub fn layout() -> alloc::alloc::Layout {
-                alloc::alloc::Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
+            pub fn layout() -> Layout {
+                Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
             }
 
              #[inline]
@@ -375,8 +376,8 @@ macro_rules! bivec3s {
             }
 
             #[inline]
-            pub fn layout() -> alloc::alloc::Layout {
-                alloc::alloc::Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
+            pub fn layout() -> Layout {
+                Layout::from_size_align(std::mem::size_of::<Self>(), std::mem::align_of::<$t>()).unwrap()
             }
 
              #[inline]
