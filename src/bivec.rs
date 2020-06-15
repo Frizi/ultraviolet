@@ -573,3 +573,23 @@ macro_rules! bivec3s {
 }
 
 bivec3s!(Bivec3 => (Vec3, f32), WBivec3 => (Wec3, f32x4));
+
+impl PartialEq for Bivec2 {
+    fn eq(&self, other: &Self) -> bool {
+        self.xy == other.xy
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.xy != other.xy
+    }
+}
+
+impl PartialEq for Bivec3 {
+    fn eq(&self, other: &Self) -> bool {
+        self.xy == other.xy && self.xz == other.xz && self.yz == other.yz
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.xy != other.xy || self.xz != other.xz || self.yz != other.yz
+    }
+}

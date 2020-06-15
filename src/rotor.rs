@@ -51,8 +51,8 @@
 //! rotations, but it may be preferable to convert them into matrices before applying them to
 //! vectors/points, if the same rotation will be applied to many vectors.
 
-use crate::*;
 use crate::util::*;
+use crate::*;
 
 use wide::f32x4;
 
@@ -675,6 +675,26 @@ macro_rules! rotor3s {
 }
 
 rotor3s!(Rotor3 => (Mat3, Vec3, Bivec3, f32), WRotor3 => (Wat3, Wec3, WBivec3, f32x4));
+
+impl PartialEq for Rotor2 {
+    fn eq(&self, other: &Self) -> bool {
+        self.s == other.s && self.bv == other.bv
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.bv != other.bv || self.bv != other.bv
+    }
+}
+
+impl PartialEq for Rotor3 {
+    fn eq(&self, other: &Self) -> bool {
+        self.s == other.s && self.bv == other.bv
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.bv != other.bv || self.bv != other.bv
+    }
+}
 
 #[cfg(test)]
 mod test {
