@@ -268,6 +268,33 @@ impl<'de> Deserialize<'de> for Mat4 {
     }
 }
 
+struct Rotor3Visitor;
+impl<'de> serde::de::Visitor<'de> for Rotor3Visitor {
+    type Value = Rotor3;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("struct Rotor3 with 4 floats")
+    }
+
+    #[inline]
+    fn visit_seq<A: SeqAccess<'de>>(self, mut seq: A) -> Result<Self::Value, A::Error> {
+        Ok(Rotor3 {
+            s: seq_next(&mut seq, 0, &self)?,
+            bv: Bivec3::new(
+                seq_next(&mut seq, 1, &self)?,
+                seq_next(&mut seq, 2, &self)?,
+                seq_next(&mut seq, 3, &self)?,
+            ),
+        })
+    }
+}
+
+impl<'de> Deserialize<'de> for Rotor3 {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        deserializer.deserialize_tuple_struct("Rotor3", 4, Rotor3Visitor)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use crate::mat::{Mat2, Mat3, Mat4};
@@ -412,6 +439,25 @@ mod test {
                 Token::F32(14.0),
                 Token::F32(15.0),
                 Token::F32(16.0),
+                Token::TupleStructEnd,
+            ],
+        );
+    }
+
+    fn rotor3() {
+        let rotor3 = Rotor3::from_rotation_xy(1.0);
+
+        assert_tokens(
+            &rotor3,
+            &[
+                Token::TupleStruct {
+                    name: "Rotor3",
+                    len: 4,
+                },
+                Token::F32(1.0),
+                Token::F32(2.0),
+                Token::F32(3.0),
+                Token::F32(4.0),
                 Token::TupleStructEnd,
             ],
         );
