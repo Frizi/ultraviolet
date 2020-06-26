@@ -1,5 +1,5 @@
 //! Dedicated transformation types as the combination of primitives.
-//! 
+//!
 //! Note that you may want to us these types over the corresponding type of
 //! homogeneous transformation matrix because they are faster in most operations,
 //! especially composition and inverse.
@@ -13,7 +13,7 @@ macro_rules! isometries {
         /// An Isometry, aka a "rigid body transformation".
         ///
         /// Defined as the combination of a rotation *and then* a translation.
-        /// 
+        ///
         /// You may want to us this type over the corresponding type of
         /// homogeneous transformation matrix because it will be faster in most operations,
         /// especially composition and inverse.
@@ -38,7 +38,7 @@ macro_rules! isometries {
             }
 
             /// Add a rotation *before* this isometry.
-            /// 
+            ///
             /// This means the rotation will only affect the rotational
             /// part of this isometry, not the translational part.
             #[inline]
@@ -47,7 +47,7 @@ macro_rules! isometries {
             }
 
             /// Add a rotation *after* this isometry.
-            /// 
+            ///
             /// This means the rotation will affect both the rotational and
             /// translational parts of this isometry, since it is being applied
             /// 'after' this isometry's translational part.
@@ -57,7 +57,7 @@ macro_rules! isometries {
             }
 
             /// Add a translation *before* this isometry.
-            /// 
+            ///
             /// Doing so will mean that the translation being added will get
             /// transformed by this isometry's rotational part.
             #[inline]
@@ -66,7 +66,7 @@ macro_rules! isometries {
             }
 
             /// Add a translation *after* this isometry.
-            /// 
+            ///
             /// Doing so will mean that the translation being added will *not*
             /// transformed by this isometry's rotational part.
             #[inline]
@@ -75,7 +75,7 @@ macro_rules! isometries {
             }
 
             /// Prepend transformation by another isometry.
-            /// 
+            ///
             /// This means that the transformation being applied will take place
             /// *before* this isometry, i.e. both its translation and rotation will be
             /// rotated by this isometry's rotational part.
@@ -85,7 +85,7 @@ macro_rules! isometries {
             }
 
             /// Append transformation by another isometry.
-            /// 
+            ///
             /// This means that the transformation being applied will take place
             /// *after* this isometry, i.e. *this isometry's* translation and rotation will be
             /// rotated by the *other* isometry's rotational part.
@@ -115,8 +115,8 @@ macro_rules! isometries {
 
             #[inline]
             pub fn into_homogeneous_matrix(self) -> $mt {
-                $mt::from_translation(self.translation)
-                    * self.rotation.into_matrix().into_homogeneous()
+                self.rotation.into_matrix().into_homogeneous()
+                    * $mt::from_translation(self.translation)
             }
         }
 
@@ -165,12 +165,12 @@ isometries!(
 );
 
 macro_rules! similarities {
-    ($($sn:ident => ($mt:ident, $rt:ident, $vt:ident, $t:ident)),+) => {
+    ($($sn:ident => ($mt:ident, $mth:ident, $rt:ident, $vt:ident, $t:ident)),+) => {
         $(
         /// A Similarity, i.e. an Isometry but with an added uniform scaling.
         ///
         /// Defined as a uniform scaling followed by a rotation followed by a translation.
-        /// 
+        ///
         /// You may want to us this type over the corresponding type of
         /// homogeneous transformation matrix because it will be faster in most operations,
         /// especially composition and inverse.
@@ -196,7 +196,7 @@ macro_rules! similarities {
             }
 
             /// Add a scaling *before* this similarity.
-            /// 
+            ///
             /// This means the scaling will only affect the scaling part
             /// of this similarity, not the translational part.
             #[inline]
@@ -205,7 +205,7 @@ macro_rules! similarities {
             }
 
             /// Add a scaling *after* this similarity.
-            /// 
+            ///
             /// This means the scaling will affect both the scaling
             /// and translational parts of this similairty, since it is being
             /// applied *after* this similarity's translational part.
@@ -216,7 +216,7 @@ macro_rules! similarities {
             }
 
             /// Add a rotation *before* this similarity.
-            /// 
+            ///
             /// This means the rotation will only affect the rotational
             /// part of this similarity, not the translational part.
             #[inline]
@@ -225,7 +225,7 @@ macro_rules! similarities {
             }
 
             /// Add a rotation *after* this similarity.
-            /// 
+            ///
             /// This means the rotation will affect both the rotational and
             /// translational parts of this similarity, since it is being applied
             /// *after* this similarity's translational part.
@@ -235,7 +235,7 @@ macro_rules! similarities {
             }
 
             /// Add a translation *before* this similarity.
-            /// 
+            ///
             /// Doing so will mean that the translation being added will get
             /// transformed by this similarity's rotational and scaling parts.
             #[inline]
@@ -244,7 +244,7 @@ macro_rules! similarities {
             }
 
             /// Add a translation *after* this similarity.
-            /// 
+            ///
             /// Doing so will mean that the translation being added will *not*
             /// transformed by this similarity's rotational or scaling parts.
             #[inline]
@@ -253,7 +253,7 @@ macro_rules! similarities {
             }
 
             /// Prepend transformation by another similarity.
-            /// 
+            ///
             /// This means that the transformation being applied will take place
             /// *before* this similarity, i.e. both its translation and rotation will be
             /// rotated by the other similarity's rotational part, and its translation
@@ -264,7 +264,7 @@ macro_rules! similarities {
             }
 
             /// Append transformation by another similarity.
-            /// 
+            ///
             /// This means that the transformation being applied will take place
             /// *after* this similarity, i.e. *this similarity's* translation and rotation will be
             /// rotated by the *other* similarity's rotational part, and *this similarity's* translation
@@ -296,9 +296,10 @@ macro_rules! similarities {
             }
 
             #[inline]
-            pub fn into_homogeneous_matrix(self) -> $mt {
-                $mt::from_translation(self.translation)
-                    * self.rotation.into_matrix().into_homogeneous()
+            pub fn into_homogeneous_matrix(self) -> $mth {
+                let scale_rot = $mt::from_scale(self.scale) * self.rotation.into_matrix();
+                scale_rot.into_homogeneous()
+                    * $mth::from_translation(self.translation)
             }
         }
 
@@ -343,6 +344,56 @@ macro_rules! similarities {
 }
 
 similarities!(
-    Similarity2 => (Mat3, Rotor2, Vec2, f32), WSimilarity2 => (Wat3, WRotor2, Wec2, f32x4),
-    Similarity3 => (Mat4, Rotor3, Vec3, f32), WSimilarity3 => (Wat4, WRotor3, Wec3, f32x4)
+    Similarity2 => (Mat2, Mat3, Rotor2, Vec2, f32), WSimilarity2 => (Wat2, Wat3, WRotor2, Wec2, f32x4),
+    Similarity3 => (Mat3, Mat4, Rotor3, Vec3, f32), WSimilarity3 => (Wat3, Wat4, WRotor3, Wec3, f32x4)
 );
+
+#[cfg(all(test, feature = "approx"))]
+mod test {
+    use super::*;
+    use approx::assert_ulps_eq;
+
+    const ANGLE_90DEG: f32 = std::f32::consts::PI * 0.5;
+
+    #[test]
+    fn isometry3_simple_transform() {
+        let sim = Isometry3::new(
+            Vec3::new(10.0, 5.0, 1.0),
+            Rotor3::from_rotation_xy(ANGLE_90DEG),
+        );
+        let vec = Vec3::unit_x();
+        assert_ulps_eq!(sim * vec, Vec3::new(10.0, 6.0, 1.0));
+    }
+
+    fn isometry3_simple_transform_matrix() {
+        let sim = Isometry3::new(
+            Vec3::new(10.0, 5.0, 1.0),
+            Rotor3::from_rotation_xy(ANGLE_90DEG),
+        );
+        let mat = sim.into_homogeneous_matrix();
+        let vec = Vec3::unit_x().into_homogeneous_point();
+        assert_ulps_eq!(mat * vec, Vec4::new(10.0, 6.0, 1.0, 1.0));
+    }
+
+    #[test]
+    fn similarity3_simple_transform() {
+        let sim = Similarity3::new(
+            Vec3::new(10.0, 5.0, 1.0),
+            Rotor3::from_rotation_xy(ANGLE_90DEG),
+            0.5,
+        );
+        let vec = Vec3::unit_x();
+        assert_ulps_eq!(sim * vec, Vec3::new(10.0, 5.5, 1.0));
+    }
+
+    fn similarity3_simple_transform_matrix() {
+        let sim = Similarity3::new(
+            Vec3::new(10.0, 5.0, 1.0),
+            Rotor3::from_rotation_xy(ANGLE_90DEG),
+            0.5,
+        );
+        let mat = sim.into_homogeneous_matrix();
+        let vec = Vec3::unit_x().into_homogeneous_point();
+        assert_ulps_eq!(mat * vec, Vec4::new(10.0, 5.5, 1.0, 1.0));
+    }
+}

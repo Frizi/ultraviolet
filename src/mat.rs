@@ -35,6 +35,15 @@ macro_rules! mat2s {
                 )
             }
 
+            #[inline]
+            pub fn from_scale(scale: $t) -> Self {
+                let zero = $t::from(0.0);
+                Self::new(
+                    $vt::new(scale, zero),
+                    $vt::new(zero, scale),
+                )
+            }
+
             /// Turn this into a homogeneous 2d transformation matrix.
             #[inline]
             pub fn into_homogeneous(self) -> $m3t {
@@ -706,7 +715,7 @@ macro_rules! mat4s {
 
             /// Assumes homogeneous 3d coordinates.
             #[inline]
-            pub fn from_scale(scale: $t) -> Self {
+            pub fn from_scale_homogeneous(scale: $t) -> Self {
                 let zero = $t::from(0.0);
                 Self::new(
                     $vt::new(scale, zero, zero, zero),
@@ -1200,6 +1209,33 @@ impl PartialEq for Mat4 {
     }
 }
 
+// Utility functions for mat3 specific code
+impl Mat3 {
+    pub fn translate(&mut self, translation: &Vec2) {
+        self[0][2] += self[0][0] * translation[0] + self[0][1] * translation[1]
+    }
+
+    pub fn translated(&self, translation: &Vec2) -> Mat3 {
+        let mut res = *self;
+        res.translate(translation);
+        res
+    }
+}
+
+// Utility functions for mat4 specific code
+impl Wat3 {
+    pub fn translate(&mut self, translation: &Wec2) {
+        let res = self[0][2] + self[0][0] * translation[0] + self[0][1] * translation[1];
+        self[0][2] = res;
+    }
+
+    pub fn translated(&self, translation: &Wec2) -> Wat3 {
+        let mut res = *self;
+        res.translate(translation);
+        res
+    }
+}
+
 // Utility functions for mat4 specific code
 impl Mat4 {
     pub fn translate(&mut self, translation: &Vec3) {
@@ -1210,7 +1246,6 @@ impl Mat4 {
     pub fn translated(&self, translation: &Vec3) -> Mat4 {
         let mut res = *self;
         res.translate(translation);
-
         res
     }
 }
@@ -1228,7 +1263,6 @@ impl Wat4 {
     pub fn translated(&self, translation: &Wec3) -> Wat4 {
         let mut res = *self;
         res.translate(translation);
-
         res
     }
 }
