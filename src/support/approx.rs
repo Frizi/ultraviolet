@@ -1,9 +1,8 @@
 use crate::*;
-use ::approx::{AbsDiffEq, UlpsEq};
+use approx::{AbsDiffEq, UlpsEq};
 
 macro_rules! impl_approx {
     ($($n:ty: $($member:ident),+;)*) => {$(
-        #[cfg(feature = "approx")]
         impl AbsDiffEq for $n {
             type Epsilon = f32;
             fn default_epsilon() -> Self::Epsilon {
@@ -46,7 +45,7 @@ impl_approx! {
 #[cfg(test)]
 mod approx_tests {
     use crate::*;
-    use ::approx::{assert_abs_diff_eq, assert_abs_diff_ne, assert_ulps_eq, assert_ulps_ne};
+    use approx::{assert_abs_diff_eq, assert_abs_diff_ne, assert_ulps_eq, assert_ulps_ne};
 
     #[test]
     fn abs_diff_eq_vec() {

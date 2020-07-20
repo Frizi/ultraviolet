@@ -5,3 +5,6 @@ mod approx;
 
 #[cfg(feature = "serde")]
 mod serde;
+
+#[cfg(feature = "bytemuck")]
+mod bytemuck;

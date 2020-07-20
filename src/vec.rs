@@ -854,6 +854,16 @@ macro_rules! vec3s {
             }
 
             #[inline]
+            pub fn yz(&self) -> $v2t {
+                $v2t::new(self.y, self.z)
+            }
+
+            #[inline]
+            pub fn xz(&self) -> $v2t {
+                $v2t::new(self.x, self.z)
+            }
+
+            #[inline]
             pub fn xyzw(&self) -> $v4t {
                 $v4t::new(self.x, self.y, self.z, $t::from(0.0))
             }
@@ -1465,6 +1475,16 @@ macro_rules! vec4s {
             #[inline]
             pub fn xy(&self) -> $v2t {
                 $v2t::new(self.x, self.y)
+            }
+
+            #[inline]
+            pub fn yz(&self) -> $v2t {
+                $v2t::new(self.y, self.z)
+            }
+
+            #[inline]
+            pub fn xz(&self) -> $v2t {
+                $v2t::new(self.x, self.z)
             }
 
              #[inline]
